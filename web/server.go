@@ -258,8 +258,9 @@ func ServeHTTP() {
 
 	r := mux.NewRouter()
 
-	r.HandleFunc("/", GetIndex).Methods("GET")
+	r.HandleFunc("/table", GetIndex).Methods("GET")
 	r.HandleFunc("/report", GetReport).Methods("GET")
+	r.HandleFunc("/", GetHeatmap).Methods("GET")
 	r.HandleFunc("/heatmap", GetHeatmap).Methods("GET")
 	r.HandleFunc("/heatmap.json", GetHeatmapData).Methods("GET")
 	r.HandleFunc("/report.json", GetMetrics).Methods("GET")
