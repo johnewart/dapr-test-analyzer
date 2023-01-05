@@ -1,0 +1,67 @@
+<html lang="en_US">
+    <head>
+        <title>Test Report</title>
+        <script type="text/javascript" src="/static/js/jquery-3.6.3.js"></script>
+        <script type="text/javascript" src="/static/js/datatables.js"></script>
+        <script type="text/javascript" src="/static/js/bootstrap.js"></script>
+
+        <link href="/static/css/datatables.css" type="text/css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.css">
+    </head>
+    <body>
+
+    <script type="text/javascript">
+        function sendXHR(type, url, data, callback) {
+            let newXHR = new XMLHttpRequest() || new window.ActiveXObject("Microsoft.XMLHTTP");
+            newXHR.open(type, url, true);
+            newXHR.send(data);
+            newXHR.onreadystatechange = function() {
+                if (this.status === 200 && this.readyState === 4) {
+                    callback(this.response);
+                }
+            };
+        }
+
+        let reports;
+
+        sendXHR("GET", "/report.json", null, function(response) {
+            reports = JSON.parse(response);
+            reports.forEach(function(r) {
+                console.log(r)
+                r.PassRate = (r.PassCount / (r.PassCount + r.FailCount) * 100).toFixed(2)
+            })
+            console.log(reports);
+
+                $('#results').DataTable(
+                    {
+                        data: reports,
+                        order: [[ 3, 'asc' ]],
+                        pageLength: 30,
+                        columns: [
+                            { data: 'TestLabel' },
+                            { data: 'PassCount' },
+                            { data: 'FailCount' },
+                            { data: 'PassRate' }
+                        ]
+                    }
+                );
+
+        });
+
+
+    </script>
+
+    <table id="results" class="display" style="width:100%" >
+        <thead>
+        <tr>
+            <th>Test Label</th>
+            <th>Pass Count</th>
+            <th>Fail Count</th>
+            <th>Pass Rate</th>
+        </tr>
+        </thead>
+    </table>
+
+    
+    </body>
+</html>
